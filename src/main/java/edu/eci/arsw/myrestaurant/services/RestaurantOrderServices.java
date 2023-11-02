@@ -7,12 +7,17 @@ package edu.eci.arsw.myrestaurant.services;
 
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 import java.util.Set;
 
 /**
  *
  * @author hcadavid
  */
+
+
 public interface RestaurantOrderServices {
 
     void addNewOrderToTable(Order o) throws OrderServicesException;
@@ -26,6 +31,8 @@ public interface RestaurantOrderServices {
     Order getTableOrder(int tableNumber);
 
     Set<Integer> getTablesWithOrders();
+
+    Collection<Order> getAllOrders();
 
     void releaseTable(int tableNumber) throws OrderServicesException;
     

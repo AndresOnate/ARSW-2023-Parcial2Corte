@@ -19,22 +19,45 @@ package edu.eci.arsw.myrestaurant.restcontrollers;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
+import edu.eci.arsw.myrestaurant.services.RestaurantOrderServices;
 import edu.eci.arsw.myrestaurant.services.RestaurantOrderServicesStub;
-import java.util.Hashtable;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.aspectj.weaver.ast.Or;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 /**
  *
  * @author hcadavid
  */
+
+@RestController
+@RequestMapping(value = "/orders")
 public class OrdersAPIController {
 
-    
+    @Autowired
+    RestaurantOrderServices ros;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<JSONArray> getOrders() throws Exception{
+        JSONArray array = new JSONArray();
+        for(Order order: ros.getAllOrders()){
+            JSONObject orderObj = new JSONObject();
+            orderObj.put("orderAmountsMap", order.getOrderAmountsMap());
+            orderObj.put("orderBill", ros.calculateTableBill(order.getTableNumber()));
+            orderObj.put( "tableNumber", order.getTableNumber());
+            array.add(orderObj);
+        }
+
+        return new ResponseEntity<>(array, HttpStatus.ACCEPTED);
+    }
+
 }
